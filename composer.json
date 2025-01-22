@@ -1,0 +1,31 @@
+{
+    "name": "hero-seguros/hero-laratoolkit",
+    "description": "Um Pacote de recursos para apoiar aplicações Laravel",
+    "type": "library",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "HeroLaraToolkit\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Mario de Moraes",
+            "email": "mario.neto@heroseguros.com.br"
+        }
+    ],
+    "require": {
+        "php": ">=8.0",
+        "illuminate/support": "^8.0|^9.0|^10.0",
+        "illuminate/http": "^8.0|^9.0|^10.0",
+        "illuminate/console": "^8.0|^9.0|^10.0",
+        "illuminate/database": "^8.0|^9.0|^10.0"
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "HeroLaraToolkit\\Providers\\HeroLaraToolkitServiceProvider"
+            ]
+        }
+    }
+}

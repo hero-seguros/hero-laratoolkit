@@ -1,0 +1,15 @@
+<?php
+
+namespace {{ namespace }};
+
+class {{ class }}Service
+{
+    public function __construct()
+    {
+    }
+
+    public function execute(): void
+    {
+        // Service logic here
+    }
+}
