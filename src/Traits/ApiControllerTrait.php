@@ -44,7 +44,7 @@ trait ApiControllerTrait
 
         $response['message'] = $message;
 
-        if ($exception instanceof \LaraToolkit\Exceptions\BusinessException) {
+        if ($exception instanceof \HeroLaraToolkit\Exceptions\BusinessException) {
             $response['message'] = $exception->getMessage();
         }
 

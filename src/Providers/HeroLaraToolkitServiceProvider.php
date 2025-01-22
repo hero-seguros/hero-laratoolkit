@@ -4,7 +4,7 @@ namespace HeroLaraToolkit\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Validator;
-use LaraToolkit\Helpers\ValidatorHelper;
+use HeroLaraToolkit\Helpers\ValidatorHelper;
 
 class HeroLaraToolkitServiceProvider extends ServiceProvider
 {
@@ -40,8 +40,8 @@ class HeroLaraToolkitServiceProvider extends ServiceProvider
 
         if ($this->app->runningInConsole()) {
             $this->commands([
-                \LaraToolkit\Commands\MakeServiceCommand::class,
-                \LaraToolkit\Commands\MakeRepositoryCommand::class,
+                \HeroLaraToolkit\Commands\MakeServiceCommand::class,
+                \HeroLaraToolkit\Commands\MakeRepositoryCommand::class,
             ]);
         }
     }

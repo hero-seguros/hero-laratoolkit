@@ -2,7 +2,7 @@
 
 namespace {{ namespace }};
 
-use LaraToolkit\Abstractions\AbstractRepository;
+use HeroLaraToolkit\Abstractions\AbstractRepository;
 use App\Models\{{ name }};
 
 class {{ class }}Repository extends AbstractRepository
