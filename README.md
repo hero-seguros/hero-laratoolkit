@@ -1,6 +1,6 @@
 # HeroLaraToolkit
 
-**HeroLaraToolkit** é uma biblioteca para Laravel que fornece um conjunto de ferramentas e abstrações para agilizar o desenvolvimento de aplicações. Com comandos personalizados, traits úteis e classes de abstração, o LaraToolkit ajuda a padronizar e simplificar tarefas comuns no desenvolvimento com Laravel.
+**HeroLaraToolkit** é uma biblioteca para Laravel que fornece um conjunto de ferramentas e abstrações para agilizar o desenvolvimento de aplicações. Com comandos personalizados, traits úteis e classes de abstração, o HeroLaraToolkit ajuda a padronizar e simplificar tarefas comuns no desenvolvimento com Laravel.
 
 ## Índice
 
@@ -37,7 +37,7 @@ composer require marioneto/lara-toolkit
 
 ### Comandos Artisan Personalizados
 
-O LaraToolkit adiciona comandos personalizados ao Artisan para gerar classes de Service e Repository de forma padronizada.
+O HeroLaraToolkit adiciona comandos personalizados ao Artisan para gerar classes de Service e Repository de forma padronizada.
 
 #### `make:service`
 
@@ -145,7 +145,7 @@ A classe `AbstractRepository` é uma abstração que fornece métodos comuns par
    namespace App\Http\Controllers;
 
    use App\Http\Controllers\Controller;
-   use LaraToolkit\Traits\ApiControllerTrait;
+   use HeroLaraToolkit\Traits\ApiControllerTrait;
 
    class UserController extends Controller
    {
