@@ -6,7 +6,7 @@ use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Validator;
 use LaraToolkit\Helpers\ValidatorHelper;
 
-class LaraToolkitServiceProvider extends ServiceProvider
+class HeroLaraToolkitServiceProvider extends ServiceProvider
 {
     public function register()
     {
