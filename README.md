@@ -25,7 +25,7 @@
 Para instalar o HeroLaraToolkit, adicione o pacote ao seu projeto Laravel usando o Composer:
 
 ```bash
-composer require marioneto/lara-toolkit
+composer require hero-seguros/hero-laratoolkit
 ```
 
 ## Requisitos
