@@ -43,7 +43,13 @@ class FormatHelper
 
     public static function phone(string $phone): string
     {
-        return '(' . substr($phone, 0, 2) . ') ' . substr($phone, 2, 4) . '-' . substr($phone, 6, 4);
+        $phone = preg_replace('/[^0-9]/', '', $phone);
+        if (strlen($phone) === 10) {
+            return '(' . substr($phone, 0, 2) . ') ' . substr($phone, 2, 4) . '-' . substr($phone, 6, 4);
+        } elseif (strlen($phone) === 11) {
+            return '(' . substr($phone, 0, 2) . ') ' . substr($phone, 2, 5) . '-' . substr($phone, 7, 4);
+        }
+        return $phone;
     }
 
     public static function cep(string $cep): string
