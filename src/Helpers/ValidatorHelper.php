@@ -136,24 +136,6 @@ class ValidatorHelper
 
     public static function passport(string $passaporte): bool
     {
-        $passaporte = trim($passaporte);
-        if (!preg_match('/^[A-Za-z0-9]+$/', $passaporte)) {
-
-            return false;
-        }
-
-        $length = strlen($passaporte);
-        if ($length < 6 || $length > 9) {
-
-            return false;
-        }
-
-        if (!preg_match('/^[A-Za-z]{2}[0-9]+$/', $passaporte)) {
-
-            return false;
-        }
-
-        return true;
+        return preg_match('/^[A-Za-z]{2}\d{6}$/i', $passaporte) > 0;
     }
-
 }
