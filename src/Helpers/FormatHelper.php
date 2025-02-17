@@ -46,6 +46,11 @@ class FormatHelper
         return '(' . substr($phone, 0, 2) . ') ' . substr($phone, 2, 4) . '-' . substr($phone, 6, 4);
     }
 
+    public static function cellphone(string $cellphone): string
+    {
+        return '(' . substr($cellphone, 0, 2) . ') ' . substr($cellphone, 2, 5) . '-' . substr($cellphone, 7, 4);
+    }
+
     public static function cep(string $cep): string
     {
         return substr($cep, 0, 5) . '-' . substr($cep, 5, 3);
