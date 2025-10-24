@@ -36,7 +36,7 @@ trait ApiControllerTrait
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    protected function returnError(string $message, Throwable $exception = null, int $statusCode = 500): JsonResponse
+    protected function returnError(string $message, Throwable $exception = null, int $statusCode = 400): JsonResponse
     {
         $response = [
             'success' => false,
