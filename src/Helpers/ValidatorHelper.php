@@ -108,7 +108,7 @@ class ValidatorHelper
             return false;
         }
 
-        if ($numero[1] === '0' || $numero[1] === '1') {
+        if ($numero[0] !== '9') {
             return false;
         }
 
