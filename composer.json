@@ -19,12 +19,14 @@
         "illuminate/support": "^8.0|^9.0|^10.0",
         "illuminate/http": "^8.0|^9.0|^10.0",
         "illuminate/console": "^8.0|^9.0|^10.0",
-        "illuminate/database": "^8.0|^9.0|^10.0"
+        "illuminate/database": "^8.0|^9.0|^10.0",
+        "spatie/laravel-health": "^1.34"
     },
     "extra": {
         "laravel": {
             "providers": [
-                "HeroLaraToolkit\\Providers\\HeroLaraToolkitServiceProvider"
+                "HeroLaraToolkit\\Providers\\HeroLaraToolkitServiceProvider",
+                "Hero\\HealthCheck\\Provider\\HealthCheckServiceProvider"
             ]
         }
     }
