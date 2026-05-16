@@ -2,10 +2,11 @@
 
 namespace {{ namespace }};
 
-use HeroLaraToolkit\Abstractions\AbstractRepository;
+use App\Contracts\Repositories\{{ name }}RepositoryInterface;
 use App\Models\{{ name }};
+use HeroLaraToolkit\Abstractions\AbstractRepository;
 
-class {{ class }}Repository extends AbstractRepository
+class {{ class }} extends AbstractRepository implements {{ name }}RepositoryInterface
 {
     protected string $modelClass = {{ name }}::class;
 }

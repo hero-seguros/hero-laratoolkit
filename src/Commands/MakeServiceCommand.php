@@ -2,6 +2,7 @@
 
 namespace HeroLaraToolkit\Commands;
 
+use HeroLaraToolkit\Commands\Concerns\HasDomainOption;
 use Illuminate\Console\GeneratorCommand;
 use Illuminate\Support\Str;
 use Symfony\Component\Console\Attribute\AsCommand;
@@ -9,15 +10,23 @@ use Symfony\Component\Console\Attribute\AsCommand;
 #[AsCommand(name: 'make:service')]
 class MakeServiceCommand extends GeneratorCommand
 {
-    protected $signature = 'make:service {name} {domain}';
+    use HasDomainOption;
 
-    protected $description = 'Create a new Service class';
+    protected $signature = 'make:service {name : The service action name (e.g. Create, Update)} {--domain= : Domain folder under app/Services (required)}';
+
+    protected $description = 'Create a new Service class scoped to a domain';
 
     protected $type = 'Service';
 
     public function handle()
     {
-        parent::handle();
+        if (! $this->domain()) {
+            $this->components->error('The --domain option is required (e.g. make:service Create --domain=Order).');
+
+            return self::FAILURE;
+        }
+
+        return parent::handle();
     }
 
     protected function getStub()
@@ -27,9 +36,7 @@ class MakeServiceCommand extends GeneratorCommand
 
     protected function getDefaultNamespace($rootNamespace)
     {
-        $domain = ucfirst($this->argument('domain'));
-
-        return $rootNamespace . '\\Services\\' . $domain;
+        return $rootNamespace . '\\Services\\' . $this->domain();
     }
 
     protected function getPath($name)
@@ -42,8 +49,7 @@ class MakeServiceCommand extends GeneratorCommand
     protected function buildClass($name)
     {
         $stub = $this->files->get($this->getStub());
-        $stub = $this->replaceNamespace($stub, $name)->replaceClass($stub, $name);
 
-        return $stub;
+        return $this->replaceNamespace($stub, $name)->replaceClass($stub, $name);
     }
 }

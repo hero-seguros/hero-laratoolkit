@@ -8,6 +8,11 @@
             "HeroLaraToolkit\\": "src/"
         }
     },
+    "autoload-dev": {
+        "psr-4": {
+            "HeroLaraToolkit\\Tests\\": "tests/"
+        }
+    },
     "authors": [
         {
             "name": "Mario de Moraes",
@@ -19,7 +24,21 @@
         "illuminate/support": "^8.0|^9.0|^10.0|^11.0|^12.0",
         "illuminate/http": "^8.0|^9.0|^10.0|^11.0|^12.0",
         "illuminate/console": "^8.0|^9.0|^10.0|^11.0|^12.0",
-        "illuminate/database": "^8.0|^9.0|^10.0|^11.0|^12.0"
+        "illuminate/database": "^8.0|^9.0|^10.0|^11.0|^12.0",
+        "illuminate/routing": "^8.0|^9.0|^10.0|^11.0|^12.0",
+        "illuminate/filesystem": "^8.0|^9.0|^10.0|^11.0|^12.0"
+    },
+    "require-dev": {
+        "orchestra/testbench": "^9.0|^10.0",
+        "pestphp/pest": "^3.0"
+    },
+    "scripts": {
+        "test": "pest"
+    },
+    "config": {
+        "allow-plugins": {
+            "pestphp/pest-plugin": true
+        }
     },
     "extra": {
         "laravel": {

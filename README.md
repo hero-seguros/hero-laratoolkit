@@ -1,28 +1,13 @@
 # HeroLaraToolkit
 
-**HeroLaraToolkit** é uma biblioteca para Laravel que fornece um conjunto de ferramentas e abstrações para agilizar o desenvolvimento de aplicações. Com comandos personalizados, traits úteis e classes de abstração, o HeroLaraToolkit ajuda a padronizar e simplificar tarefas comuns no desenvolvimento com Laravel.
+Biblioteca compartilhada usada pelos serviços Laravel da Hero Seguros. Fornece:
 
-## Índice
-
-- [Instalação](#instalação)
-- [Requisitos](#requisitos)
-- [Funcionalidades](#funcionalidades)
-    - [Comandos Artisan Personalizados](#comandos-artisan-personalizados)
-        - [`make:service`](#makeservice)
-        - [`make:repository`](#makerepository)
-    - [Trait `ApiControllerTrait`](#trait-apicontrollertrait)
-    - [Classe `AbstractRepository`](#classe-abstractrepository)
-- [Como Utilizar](#como-utilizar)
-    - [Gerando um Service](#gerando-um-service)
-    - [Gerando um Repository](#gerando-um-repository)
-    - [Usando a Trait `ApiControllerTrait`](#usando-a-trait-apicontrollertrait)
-    - [Criando Exceções Personalizadas](#criando-exceções-personalizadas)
-- [Contribuição](#contribuição)
-- [Licença](#licença)
+- **Geradores de código `make:` opinativos**, que organizam arquivos por domínio e já injetam as convenções da arquitetura padrão (Controllers com `ApiControllerTrait`, Services com `execute()`, Repositories com interface + bind, etc.).
+- **Validadores brasileiros** auto-registrados (`cpf`, `cnpj`, `phone`, `cellphone`, `cep`, `passport`).
+- **Helpers** de formatação (`FormatHelper`) e validação (`ValidatorHelper`).
+- **`AbstractRepository`**, **`ApiControllerTrait`** e **`BusinessException`** como base do padrão de serviço/controller.
 
 ## Instalação
-
-Para instalar o HeroLaraToolkit, adicione o pacote ao seu projeto Laravel usando o Composer:
 
 ```bash
 composer require hero-seguros/hero-laratoolkit
@@ -31,159 +16,129 @@ composer require hero-seguros/hero-laratoolkit
 ## Requisitos
 
 - **PHP**: >= 8.0
-- **Laravel**: 8.x, 9.x ou 10.x
+- **Laravel**: 8.x, 9.x, 10.x, 11.x ou 12.x
 
-## Funcionalidades
+## Comandos `make:` — visão geral
 
-### Comandos Artisan Personalizados
+Todos os overrides preservam os flags nativos do Laravel (`--api`, `--resource`, `--model=`, `--sync`, etc.). O `--domain=` é **opcional** em quase tudo — quando omitido, o comando se comporta exatamente como o nativo.
 
-O HeroLaraToolkit adiciona comandos personalizados ao Artisan para gerar classes de Service e Repository de forma padronizada.
+### Overrides de comandos nativos
 
-#### `make:service`
+| Comando | Resultado com `--domain=Foo` | Resultado sem `--domain` |
+|---|---|---|
+| `make:controller` | `app/Http/Controllers/Foo/{Name}.php` (com `ApiControllerTrait`) | nativo |
+| `make:request` | `app/Http/Requests/Foo/{Name}.php` | nativo |
+| `make:resource` | `app/Http/Resources/Foo/{Name}.php` | nativo |
+| `make:policy` | `app/Policies/Foo/{Name}.php` | nativo |
+| `make:job` | `app/Jobs/Foo/{Name}.php` | nativo |
+| `make:command` | `app/Console/Commands/Foo/{Name}.php` | nativo |
+| `make:middleware` | `app/Http/Middleware/Foo/{Name}.php` | nativo |
+| `make:rule` | `app/Rules/Foo/{Name}.php` | nativo |
+| `make:observer` | `app/Observers/Foo/{Name}.php` | nativo |
+| `make:test` | depende de `--type` (ver abaixo) | nativo (com Pest forçado) |
 
-Gera uma classe de Service organizada por domínio.
+### Comandos com contrato próprio
 
-**Sintaxe:**
+| Comando | Assinatura | Resultado |
+|---|---|---|
+| `make:service` | `{name} --domain={Dominio}` (domínio **obrigatório**) | `app/Services/{Dominio}/{Name}Service.php` |
+| `make:repository` | `{name}` | Cria interface, implementação e bind no `RepositoryServiceProvider` |
+| `make:adapter` | `{name} [--domain=Foo]` | `app/Adapters/[Foo/]{Name}Adapter.php` (Guzzle) |
+| `make:helper` | `{name}` (sem `--domain`) | `app/Helpers/{Name}Helper.php` |
 
-```bash
-php artisan make:service {nome} {dominio}
-```
-
-- `{nome}`: O nome do Service a ser criado.
-- `{dominio}`: O domínio ao qual o Service pertence.
-
-**Exemplo:**
-
-```bash
-php artisan make:service Create User
-```
-
-Isso criará a classe `CreateService` em `app/Services/User/CreateService.php`.
-
-#### `make:repository`
-
-Gera uma classe de Repository que estende `AbstractRepository`.
-
-**Sintaxe:**
+### `make:test` — tipos suportados
 
 ```bash
-php artisan make:repository {nome}
+php artisan make:test ListOrders --type=feature --domain=Order
+# → tests/Feature/Order/ListOrders.php
 ```
 
-- `{nome}`: O nome Model para o Repository a ser criado.
+| `--type=` | Caminho gerado |
+|---|---|
+| `feature` | `tests/Feature/[Domain/]{Name}.php` |
+| `unit-controller` | `tests/Unit/Controllers/[Domain/]{Name}.php` |
+| `unit-service` | `tests/Unit/Services/[Domain/]{Name}.php` |
+| `unit-policy` | `tests/Unit/Policies/[Domain/]{Name}.php` |
+| `unit-helper` | `tests/Unit/Helpers/{Name}.php` (sem domínio) |
 
-**Exemplo:**
+Pest é forçado sempre. Use `--phpunit` se precisar do stub PHPUnit.
+
+## `make:repository` — fluxo
 
 ```bash
-php artisan make:repository User
+php artisan make:repository Order
 ```
 
-Isso criará a classe `UserRepository` em `app/Repositories/UserRepository.php`.
+Gera **três efeitos**:
 
-### Trait `ApiControllerTrait`
+1. `app/Contracts/Repositories/OrderRepositoryInterface.php`
+2. `app/Repositories/OrderRepository.php` (estende `AbstractRepository`, implementa a interface)
+3. `app/Providers/RepositoryServiceProvider.php` é criado (na primeira execução) ou atualizado com o bind `OrderRepositoryInterface::class => OrderRepository::class`
 
-A trait `ApiControllerTrait` fornece métodos para padronizar as respostas de APIs em suas controllers.
+O `HeroLaraToolkitServiceProvider` detecta a presença de `App\Providers\RepositoryServiceProvider` no boot e o registra automaticamente — não é preciso editar `AppServiceProvider` nem `bootstrap/providers.php`.
 
-- **`returnSuccess($data, string $message = null, int $statusCode = 200)`**: Retorna uma resposta JSON de sucesso.
-- **`returnError(string $message, Throwable $exception = null, int $statusCode = 500)`**: Retorna uma resposta JSON de erro, registrando a exceção no log sem usar facades ou helpers.
+Executar `make:repository Order` duas vezes é idempotente: o bind não duplica. Use `--force` para sobrescrever os arquivos `.php`.
 
-### Classe `AbstractRepository`
+## Validadores
 
-A classe `AbstractRepository` é uma abstração que fornece métodos comuns para interagir com modelos Eloquent, como:
+Registrados globalmente pelo Service Provider — basta usar nas regras:
 
-- `getAll()`
-- `getById($id)`
-- `create(array $attributes)`
-- `update($id, array $attributes)`
-- `delete($id)`
-
-## Como Utilizar
-
-### Gerando um Service
-
-1. Execute o comando `make:service`:
-
-   ```bash
-   php artisan make:service NomeDoService Dominio
-   ```
-
-   Exemplo:
-
-   ```bash
-   php artisan make:service Create User
-   ```
-
-2. O Service será criado em `app/Services/{Dominio}/{NomeDoService}Service.php`.
-
-3. Implemente a lógica necessária no método `execute()` da classe gerada.
-
-### Gerando um Repository
-
-1. Execute o comando `make:repository`:
-
-   ```bash
-   php artisan make:repository NomeDoModel
-   ```
-
-   Exemplo:
-
-   ```bash
-   php artisan make:repository User
-   ```
-
-2. O Repository será criado em `app/Repositories/{NomeDoModel}Repository.php`.
-
-3. No Repository gerado, o método `model()` já está definido para usar o modelo especificado.
-
-### Usando a Trait `ApiControllerTrait`
-
-1. Na sua controller, importe e utilize a trait:
-
-   ```php
-   <?php
-
-   namespace App\Http\Controllers;
-
-   use App\Http\Controllers\Controller;
-   use HeroLaraToolkit\Traits\ApiControllerTrait;
-
-   class UserController extends Controller
-   {
-       use ApiControllerTrait;
-
-       // ...
-   }
-   ```
-
-2. Utilize os métodos `returnSuccess` e `returnError` nas suas ações:
-
-   ```php
-   public function index()
-   {
-       try {
-           $users = $this->userRepository->getAll();
-
-           return $this->returnSuccess($users, 'Usuários obtidos com sucesso.');
-       } catch (\Exception $exception) {
-           return $this->returnError('Erro ao obter usuários.', $exception);
-       }
-   }
-   ```
-
-### Usnado Exceções De Negócio
-
-Caso você precise gerar uma excessão onde deseja que a mensagem seja retornada no JSON de erro, você pode usar a excessão `BusinessException`.
 ```php
-if ($data['age'] < 18) {
-   throw new BusinessException('O usuário deve ter pelo menos 18 anos.');
+public function rules(): array
+{
+    return [
+        'cpf'      => 'required|cpf',
+        'cnpj'     => 'nullable|cnpj',
+        'telefone' => 'required|cellphone',
+        'fixo'     => 'nullable|phone',
+        'cep'      => 'required|cep',
+        'passport' => 'nullable|passport',
+    ];
 }
 ```
-Se você estiver usando a trait `ApiControllerTrait`, você pode usar o método `returnError` para retornar a mensagem da `BusinessException` no JSON de erro, suprimindo a mensagem padrão.
 
-## Contribuição
+## `ApiControllerTrait` + `BusinessException`
 
-Contribuições são bem-vindas! Sinta-se à vontade para abrir issues e pull requests no repositório do GitHub.
+Padroniza respostas JSON de controllers:
+
+```php
+use HeroLaraToolkit\Traits\ApiControllerTrait;
+use HeroLaraToolkit\Exceptions\BusinessException;
+
+class OrderController extends Controller
+{
+    use ApiControllerTrait;
+
+    public function store(StoreOrderRequest $request): JsonResponse
+    {
+        try {
+            $order = app(CreateService::class)->execute($request->validated());
+
+            return $this->returnSuccess($order, 'Pedido criado.');
+        } catch (Throwable $e) {
+            return $this->returnError('Falha ao criar pedido.', $e);
+        }
+    }
+}
+```
+
+Para erros de negócio que precisam vazar a mensagem para o caller, lance `BusinessException` — o trait substitui a mensagem genérica pela do exception automaticamente.
+
+## Helpers
+
+- `FormatHelper::cpf|cnpj|cep|phone|dateToBr|dateToMysql|floatToBr` — máscaras e conversões pt-BR ↔ MySQL.
+- `DebugHelper::inFile($name, $data)` — escreve um JSON em `base_path()` para debug local. **Não comitar chamadas.**
+
+## CHANGELOG
+
+### 2.0.0 (breaking)
+
+- **`make:service` mudou de assinatura**: `make:service Create Order` → `make:service Create --domain=Order`. Scripts/CI precisam ser atualizados ao subir.
+- Adicionados 10 overrides de comandos nativos (`make:controller`, `make:request`, `make:resource`, `make:policy`, `make:job`, `make:command`, `make:test`, `make:middleware`, `make:rule`, `make:observer`) que aceitam `--domain=` opcional.
+- Adicionados `make:adapter` e `make:helper`.
+- `make:repository` agora gera interface + bind via `RepositoryServiceProvider` dedicado.
+- Suite de testes Pest + Orchestra Testbench adicionada.
 
 ## Licença
 
-Este projeto está licenciado sob a licença MIT. Consulte o arquivo [LICENSE](LICENSE) para obter mais informações.
+MIT — veja [LICENSE](LICENSE).
