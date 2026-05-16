@@ -16,7 +16,11 @@ composer require hero-seguros/hero-laratoolkit
 ## Requisitos
 
 - **PHP**: >= 8.0
-- **Laravel**: 8.x, 9.x, 10.x, 11.x ou 12.x
+- **Laravel** (runtime, declarado em `composer.json`): 8.x, 9.x, 10.x, 11.x ou 12.x
+
+### Cobertura de CI
+
+O workflow `tests.yml` roda a suíte Pest contra **Laravel 11 (Testbench 9) e Laravel 12 (Testbench 10)**, em PHP 8.2, 8.3 e 8.4. Laravel 8/9/10 continuam declarados como compatíveis no `composer.json` mas **não são exercitados em CI** — o ecossistema bloqueia a instalação combinada de Testbench 8 + PHPUnit-compatível-com-Pest-3 via security advisories (Laravel 10 já está fora do suporte de segurança oficial desde fev/2025). Se você usa o pacote em um serviço Laravel 8-10, os testes precisam ser rodados manualmente no ambiente do serviço.
 
 ## Comandos `make:` — visão geral
 
