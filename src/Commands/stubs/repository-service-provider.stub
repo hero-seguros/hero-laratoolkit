@@ -1,0 +1,26 @@
+<?php
+
+namespace App\Providers;
+
+use Illuminate\Support\ServiceProvider;
+
+class RepositoryServiceProvider extends ServiceProvider
+{
+    /**
+     * Repository interface => concrete implementation bindings.
+     *
+     * Maintained by `php artisan make:repository`. Entries are inserted
+     * automatically; safe to edit by hand as long as the array keys/values
+     * remain class-string pairs.
+     */
+    protected array $repositories = [
+        // {{ marker }}
+    ];
+
+    public function register(): void
+    {
+        foreach ($this->repositories as $interface => $concrete) {
+            $this->app->bind($interface, $concrete);
+        }
+    }
+}

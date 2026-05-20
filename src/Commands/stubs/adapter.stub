@@ -1,0 +1,22 @@
+<?php
+
+namespace {{ namespace }};
+
+use GuzzleHttp\Client;
+use GuzzleHttp\Exception\GuzzleException;
+use Psr\Http\Message\ResponseInterface;
+
+class {{ class }}Adapter
+{
+    public function __construct(private readonly Client $client)
+    {
+    }
+
+    /**
+     * @throws GuzzleException
+     */
+    protected function request(string $method, string $uri, array $options = []): ResponseInterface
+    {
+        return $this->client->request($method, $uri, $options);
+    }
+}
