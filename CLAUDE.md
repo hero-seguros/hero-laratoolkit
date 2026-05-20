@@ -22,7 +22,7 @@ To test changes against a consumer service, point that service's `composer.json`
 ## Supported runtimes
 
 - **PHP:** `>=8.0`
-- **Laravel (illuminate/*):** `^8.0 | ^9.0 | ^10.0 | ^11.0 | ^12.0`
+- **Laravel (illuminate/*):** `^8.0 | ^9.0 | ^10.0 | ^11.0 | ^12.0 | ^13.0`
 
 Note: the README still claims Laravel 8.x/9.x/10.x. The actual constraint in `composer.json` is wider (up to 12.x) — trust `composer.json`. When touching code that uses framework APIs, keep it compatible across the full range; do not adopt syntax/APIs that only exist in newer versions without guarding.
 
