@@ -101,6 +101,8 @@ public function rules(): array
 }
 ```
 
+> `cnpj` delega para `laravellegends/pt-br-validator` e aceita tanto o formato numérico tradicional quanto o formato alfanumérico da Receita Federal (IN RFB 2.229/2024, em vigor a partir de 07/2026).
+
 ## `ApiControllerTrait` + `BusinessException`
 
 Padroniza respostas JSON de controllers:
