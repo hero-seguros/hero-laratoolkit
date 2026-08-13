@@ -19,12 +19,16 @@
         "illuminate/support": "^8.0|^9.0|^10.0|^11.0|^12.0",
         "illuminate/http": "^8.0|^9.0|^10.0|^11.0|^12.0",
         "illuminate/console": "^8.0|^9.0|^10.0|^11.0|^12.0",
-        "illuminate/database": "^8.0|^9.0|^10.0|^11.0|^12.0"
+        "illuminate/database": "^8.0|^9.0|^10.0|^11.0|^12.0",
+        "laravellegends/pt-br-validator": "^12.2"
     },
     "extra": {
         "laravel": {
             "providers": [
                 "HeroLaraToolkit\\Providers\\HeroLaraToolkitServiceProvider"
+            ],
+            "dont-discover": [
+                "laravellegends/pt-br-validator"
             ]
         }
     }
