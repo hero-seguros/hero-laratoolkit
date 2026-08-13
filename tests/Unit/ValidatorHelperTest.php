@@ -19,15 +19,26 @@ describe('cpf', function () {
 });
 
 describe('cnpj', function () {
-    // The helper uses a custom weighting (12..1, then 13..1) instead of the
-    // standard CNPJ algorithm — we test the helper's actual behaviour.
-    it('accepts a CNPJ whose check digits match the helper algorithm', function () {
-        expect(ValidatorHelper::cnpj('12345678900080'))->toBeTrue()
-            ->and(ValidatorHelper::cnpj('12.345.678/9000-80'))->toBeTrue();
+    // Delegates to laravellegends/pt-br-validator's Cnpj rule, which implements
+    // the official Receita Federal check-digit algorithm (weights 5,4,3,2,9,8,7,6,5,4,3,2
+    // then 6,5,4,3,2,9,8,7,6,5,4,3,2) and supports the alphanumeric CNPJ format
+    // (IN RFB 2.229/2024, in effect from 07/2026).
+    it('accepts a valid numeric CNPJ, masked or not', function () {
+        expect(ValidatorHelper::cnpj('11.444.777/0001-61'))->toBeTrue()
+            ->and(ValidatorHelper::cnpj('11444777000161'))->toBeTrue();
     });
 
-    it('rejects CNPJs with wrong check digits or wrong length', function () {
-        expect(ValidatorHelper::cnpj('12345678900000'))->toBeFalse()
+    it('accepts a valid alphanumeric CNPJ, masked or not', function () {
+        // Worked example from Serpro's official "Cálculo dos dígitos verificadores
+        // de CNPJ alfanumérico" manual (2024-11-05): base 12ABC34501DE -> DVs 3, 5.
+        expect(ValidatorHelper::cnpj('12ABC34501DE35'))->toBeTrue()
+            ->and(ValidatorHelper::cnpj('12.ABC.345/01DE-35'))->toBeTrue();
+    });
+
+    it('rejects CNPJs with wrong check digits, repeated digits or wrong length', function () {
+        expect(ValidatorHelper::cnpj('11444777000100'))->toBeFalse()
+            ->and(ValidatorHelper::cnpj('12ABC34501DE36'))->toBeFalse()
+            ->and(ValidatorHelper::cnpj('11111111111111'))->toBeFalse()
             ->and(ValidatorHelper::cnpj('1122'))->toBeFalse();
     });
 });
