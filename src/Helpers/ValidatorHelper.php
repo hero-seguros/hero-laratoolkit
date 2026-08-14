@@ -2,6 +2,8 @@
 
 namespace HeroLaraToolkit\Helpers;
 
+use LaravelLegends\PtBrValidator\Rules\Cnpj;
+
 class ValidatorHelper
 {
     public static function cpf(string $cpf): bool
@@ -33,41 +35,7 @@ class ValidatorHelper
 
     public static function cnpj(string $cnpj): bool
     {
-        $cnpj = preg_replace('/[^0-9]/', '', $cnpj);
-
-        if (strlen($cnpj) != 14) {
-            return false;
-        }
-
-        $sum = 0;
-        $length = strlen($cnpj) - 2;
-
-        for ($t = 12; $t >= 1; $t--) {
-            $sum += $cnpj[$length - $t] * $t;
-        }
-
-        $mod = $sum % 11;
-        $digit = $mod < 2 ? 0 : 11 - $mod;
-
-        if ($cnpj[$length] != $digit) {
-            return false;
-        }
-
-        $sum = 0;
-        $length++;
-
-        for ($t = 13; $t >= 1; $t--) {
-            $sum += $cnpj[$length - $t] * $t;
-        }
-
-        $mod = $sum % 11;
-        $digit = $mod < 2 ? 0 : 11 - $mod;
-
-        if ($cnpj[$length] != $digit) {
-            return false;
-        }
-
-        return true;
+        return (new Cnpj())->passes('cnpj', $cnpj);
     }
 
     public static function phone(string $telefone): bool
